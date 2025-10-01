@@ -1,0 +1,195 @@
+from tkinter import *
+from tkinter import messagebox
+
+
+win = Tk()
+win.geometry("500x500")
+win.title("Login/Sign up page")
+
+bg_image = PhotoImage(file="projectimage.png")
+canvas = Canvas(win, width=500, height=500)
+canvas.pack(fill="both", expand=True)
+canvas.create_image(0, 0, image=bg_image, anchor="nw")
+
+f1 = Frame(bg="light blue")
+f2 = Frame(bg="light green")
+f3 = Frame(bg="light pink")
+f4 = Frame(bg="beige")
+f5 = Frame(bg="grey")
+f6 = Frame(bg="grey")
+f7=Frame(bg="white")
+
+for frame in (f1, f2, f3, f4, f5, f6,f7):
+    canvas.create_window(0, 0, anchor="nw", window=frame, width=500, height=500)
+
+fake=Label(f7, text="Joogle", font=("Times New Roman", 20), bg="white")
+fake.pack()
+img=PhotoImage(file="searchbar.png")
+fakeimg=Label(f7, image=img)
+fakeimg.pack()
+
+
+def confirm():
+    if str(x2.get()) != str(x3.get()):
+        messagebox.showinfo("Info", "Passwords don't match")
+    else:
+        with open("account.txt", 'r+') as file:
+            lines = file.readlines()
+            file.seek(0)
+            file.truncate()
+            for i in lines:
+                check = i.strip().split(",")
+                if check[0] == str(un.get()):
+                    file.write(str(un.get()) + "," + str(x2.get()) + "\n")
+                    messagebox.showinfo("Info", "Password changed!")
+                else:
+                    file.write(i)
+
+def nxt():
+    global x2, x3
+    with open('account.txt', 'r') as file:
+        for i in file:
+            check = i.strip().split(",")
+            if str(un.get()) == str(check[0]):
+                f6.lift()
+                Label(f6, text="Enter a password:", bg="grey").grid(row=2, column=1, pady=5, padx=5)
+                Label(f6, text="Confirm a password:", bg="grey").grid(row=3, column=1, pady=5, padx=5)
+                x2 = StringVar()
+                x3 = StringVar()
+                Entry(f6, textvariable=x2).grid(row=2, column=2, pady=5, padx=5)
+                Entry(f6, textvariable=x3).grid(row=3, column=2, pady=5, padx=5)
+                Button(f6, text="Confirm new password",command=confirm, activebackground="dark grey").grid(row=4, column=2, pady=5, padx=5)
+                return
+    messagebox.showerror("Error", "Username doesn't exist!")
+
+def x():
+    with open("account.txt", 'r') as file:
+        for i in file:
+            check = i.strip().split(",")
+            if str(un.get()) == str(check[0]) and str(ps.get()) == str(check[1]):
+                return True
+    return False
+
+def changepassword():
+    global user, un, user1
+    f5.lift()
+    user = Label(f5, text="Username:", bg="grey")
+    un = StringVar()
+    user1 = Entry(f5, textvariable=un)
+    sbmit = Button(f5, text="Make new password", command=nxt, activebackground="dark grey")
+    user.grid(row=1, column=1, pady=5, padx=5)
+    user1.grid(row=1, column=2, pady=5, padx=5)
+    sbmit.grid(row=3, column=2, pady=5, padx=5)
+
+def submit():
+    if x():
+        
+        f7.lift()
+    else:
+        messagebox.showinfo("Invalid", "Invalid username or password")
+        un.set("")
+        ps.set("")
+        
+
+def login():
+    global user, pswrd, user1, pswrd1, sbmit, un, ps
+    f2.lift()
+    user = Label(f2, text="Username:", bg="light green")
+    pswrd = Label(f2, text="Password:", bg="light green")
+    un = StringVar()
+    ps = StringVar()
+    user1 = Entry(f2, textvariable=un)
+    pswrd1 = Entry(f2, textvariable=ps)
+    sbmit = Button(f2, text="Login", command=submit, activebackground="green")
+    user.grid(row=1, column=1, pady=5, padx=5)
+    pswrd.grid(row=2, column=1, pady=5, padx=5)
+    user1.grid(row=1, column=2, pady=5, padx=5)
+    pswrd1.grid(row=2, column=2, pady=5, padx=5)
+    sbmit.grid(row=3, column=2, pady=5, padx=5)
+    b3.grid(row=1, column=3, pady=5, padx=5)
+    b4.grid(row=2, column=3, pady=5, padx=5)
+
+def sn():
+    with open("account.txt", 'r') as file:
+        for i in file:
+            check = i.strip().split(",")
+            if str(x1.get()) == str(check[0]):
+                messagebox.showinfo("Info", "This username already exists")
+                return
+    if str(x2.get()) != str(x3.get()):
+        messagebox.showinfo("Info", "Passwords don't match")
+    else:
+        with open("account.txt", 'a') as file:
+            file.write(str(x1.get()) + "," + str(x2.get()) + "\n")
+        messagebox.showinfo("Info", "Account registered")
+        x1.set("")
+        x2.set("")
+        x3.set("")
+
+def signup():
+    global x1, x2, x3
+    f3.lift()
+    Button(f3, text="Sign up", command=sn, activebackground="red").grid(row=4, column=2, pady=5, padx=5)
+    Label(f3, text="Enter a username:", bg="light pink").grid(row=1, column=1, pady=5, padx=5)
+    Label(f3, text="Enter a password:", bg="light pink").grid(row=2, column=1, pady=5, padx=5)
+    Label(f3, text="Confirm a password:", bg="light pink").grid(row=3, column=1, pady=5, padx=5)
+    x1 = StringVar()
+    x2 = StringVar()
+    x3 = StringVar()
+    Entry(f3, textvariable=x1).grid(row=1, column=2, pady=5, padx=5)
+    Entry(f3, textvariable=x2).grid(row=2, column=2, pady=5, padx=5)
+    Entry(f3, textvariable=x3).grid(row=3, column=2, pady=5, padx=5)
+
+def dlte():
+    if x():
+        m1 = messagebox.askyesno("Warning", "Are you sure you want to delete this account?", icon="warning")
+        if m1:
+            with open('account.txt', 'r') as file:
+                read = file.readlines()
+            with open('account.txt', 'w') as file:
+                for line in read:
+                    if line.strip() != str(un.get()) + "," + str(ps.get()):
+                        file.write(line)
+            messagebox.showinfo("Info", "Account deleted")
+    else:
+        messagebox.showinfo("Invalid", "Invalid username or password")
+
+def deleteaccount():
+    global user, pswrd, user1, pswrd1, sbmit, un, ps
+    f4.lift()
+    user = Label(f4, text="Username:", bg="beige")
+    pswrd = Label(f4, text="Password:", bg="beige")
+    un = StringVar()
+    ps = StringVar()
+    user1 = Entry(f4, textvariable=un)
+    pswrd1 = Entry(f4, textvariable=ps)
+    sbmit = Button(f4, text="Delete", command=dlte, activebackground="brown")
+    user.grid(row=1, column=1, pady=5, padx=5)
+    pswrd.grid(row=2, column=1, pady=5, padx=5)
+    user1.grid(row=1, column=2, pady=5, padx=5)
+    pswrd1.grid(row=2, column=2, pady=5, padx=5)
+    sbmit.grid(row=3, column=2, pady=5, padx=5)
+
+def mainmenu():
+    f1.lift()
+
+b1 = Button(f1, text="Login", command=login)
+b2 = Button(f1, text="Sign up", command=signup)
+b1.pack(ipady=5, pady=10)
+b2.pack(ipady=5, pady=10)
+
+b3 = Button(f2, text="Delete account", command=deleteaccount, activebackground="green")
+b4 = Button(f2, text="Change password", command=changepassword, activebackground="green")
+
+mb = Menu(win)
+mb1 = Menu(mb, tearoff=0)
+mb1.add_command(label="Login", command=login)
+mb1.add_command(label="Sign up", command=signup)
+mb1.add_command(label="Delete account", command=deleteaccount)
+mb1.add_separator()
+mb1.add_command(label="Main menu", command=mainmenu)
+mb.add_cascade(label="Menu", menu=mb1)
+win.config(menu=mb)
+
+mainmenu()
+win.mainloop()
